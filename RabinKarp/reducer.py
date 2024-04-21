@@ -3,22 +3,23 @@
 
 import sys
 
-def rabin_karp_hash(s, base=256, prime=101):
-    h = 0
-    for char in s:
-        h = (h * base + ord(char)) % prime
-    return h
 
 def reducer():
-    pattern = 'the'  
-    pattern_hash = rabin_karp_hash(pattern)
-
+    current_idx = None
+    starting_pos = []
     for line in sys.stdin:
-        key, value = line.strip().split('\t')
-        substring_hash = rabin_karp_hash(value)
+        k, v = line.strip().split("\t")
+        if k == current_idx:
+            starting_pos.append(int(v))
+        else:
+            if current_idx:
+                print(f"{current_idx}\t{len(starting_pos)}")
+            current_idx = k
+            starting_pos = [int(v)]
 
-        if substring_hash == pattern_hash and value == pattern:
-            print(f"Found '{pattern}' at position {key}")
+    if current_idx:
+        print(f"{current_idx}\t{len(starting_pos)}")
+
 
 if __name__ == "__main__":
     reducer()

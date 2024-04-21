@@ -1,13 +1,15 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+"""mapper.py"""
 
 import sys
-import os
+
 
 class TrieNode:
     def __init__(self):
         self.children = {}
         self.fail = None
         self.output = []
+
 
 def build_trie(keywords):
     root = TrieNode()
@@ -19,6 +21,7 @@ def build_trie(keywords):
             node = node.children[char]
         node.output.append(keyword)
     return root
+
 
 def build_fail_transitions(root):
     queue = []
@@ -36,7 +39,8 @@ def build_fail_transitions(root):
             child.fail = fail_node.children[char] if fail_node else root
             child.output += child.fail.output
 
-def process_input(text, keywords, lineid):
+
+def process_input(text, keywords):
     matches = []
     root = build_trie(keywords)
     build_fail_transitions(root)
@@ -50,19 +54,20 @@ def process_input(text, keywords, lineid):
             continue
         current_node = current_node.children[char]
         for match in current_node.output:
-            matches.append((i - len(match) + 1, lineid))
+            matches.append(i - len(match) + 1)
     return matches
 
+
 def main():
-    pattern = os.environ['PATTERN']
-    keywords = [pattern]  # Define your keywords here
-    lineid = 0
     for line in sys.stdin:
-        lineid += 1
-        text = line.strip()
-        matches = process_input(text, keywords, lineid)
+        text, pattern, text_index, pattern_index = line.strip().split("\t")
+        text_index = int(text_index)
+        pattern_index = int(pattern_index)
+        matches = process_input(text, [pattern])
         for match in matches:
-            print(f"{match[0]}\t{match[1]}")
-    
+            print(f"{text_index + match - pattern_index}\t{pattern_index}")
+
+
 if __name__ == "__main__":
     main()
+

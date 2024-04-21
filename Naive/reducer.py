@@ -3,21 +3,23 @@
 
 import sys
 
-def brute_force_search(pattern, text):
-    m, n = len(pattern), len(text)
-    results = []
-    for i in range(n - m + 1):
-        if text[i:i + m] == pattern:
-            results.append(i)
-    return results
 
 def reducer():
-    pattern = 'the'
+    current_idx = None
+    starting_pos = []
     for line in sys.stdin:
-        line_number, text = line.strip().split('\t')
-        matches = brute_force_search(pattern, text)
-        for match in matches:
-            print(f"Found '{pattern}' at line {line_number} position {match}")
+        k, v = line.strip().split("\t")
+        if k == current_idx:
+            starting_pos.append(int(v))
+        else:
+            if current_idx:
+                print(f"{current_idx}\t{len(starting_pos)}")
+            current_idx = k
+            starting_pos = [int(v)]
+
+    if current_idx:
+        print(f"{current_idx}\t{len(starting_pos)}")
+
 
 if __name__ == "__main__":
     reducer()

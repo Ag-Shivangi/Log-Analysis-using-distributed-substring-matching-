@@ -1,21 +1,25 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+"""reducer.py"""
 
 import sys
 
-def main():
-    current_key = None
-    current_matches = []
+
+def reducer():
+    current_idx = None
+    starting_pos = []
     for line in sys.stdin:
-        key, match = line.strip().split("\t")
-        if key != current_key:
-            if current_key:
-                print(f"{current_key}\t{current_matches}")
-            current_key = key
-            current_matches = [match]
+        k, v = line.strip().split("\t")
+        if k == current_idx:
+            starting_pos.append(int(v))
         else:
-            current_matches.append(match)
-    if current_key:
-        print(f"{current_key}\t{current_matches}")
+            if current_idx:
+                print(f"{current_idx}\t{len(starting_pos)}")
+            current_idx = k
+            starting_pos = [int(v)]
+
+    if current_idx:
+        print(f"{current_idx}\t{len(starting_pos)}")
+
 
 if __name__ == "__main__":
-    main()
+    reducer()
